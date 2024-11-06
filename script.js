@@ -36,6 +36,51 @@ window.onscroll = () => {
     menuIcon.classList.remove("fa-x");
     navbar.classList.remove("active");
 };
+const scriptURL = 'https://script.google.com/macros/s/AKfycbzqXNdi2g9bqUBq4f-XT6gI-WK2cn3STgSojraHWJBbBww6Yzc3D2rTeUNU35ozV_NKsQ/exec';
+const form = document.forms['submit-to-google-sheet'];
+const popup = document.getElementById("popup");
+const msg = document.getElementById("msg");
+const closePopup = document.getElementById("closePopup");
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  fetch(scriptURL, {
+    method: 'POST',
+    body: new FormData(form),
+  })
+    .then((response) => {
+      if (response.ok) {
+        msg.textContent = "Message sent successfully!";
+      } else {
+        msg.textContent = "Failed to send message.";
+      }
+      showPopup();
+
+      // Clear the form after showing the message
+      form.reset();
+    })
+    .catch((error) => {
+      console.error('Error!', error.message);
+      msg.textContent = "Error sending message.";
+      showPopup();
+    });
+});
+
+function showPopup() {
+  popup.style.display = "flex"; // Show the popup
+
+  // Hide the popup after 5 seconds
+  setTimeout(() => {
+    popup.style.display = "none";
+    msg.textContent = ""; // Clear the message content
+  }, 5000);
+}
+
+// Close popup when 'X' is clicked
+closePopup.addEventListener("click", () => {
+  popup.style.display = "none";
+});
 
 
 
